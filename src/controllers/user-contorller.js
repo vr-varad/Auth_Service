@@ -22,12 +22,12 @@ const create = async (req,res)=>{
   }
 }
 
-const getById = async (req,res)=>{
+const signIn = async (req,res)=>{
   try {
-    const user = await userService.getById(req.params.id)
+    const response = await userService.signIn(req.body.email, req.body.password)
     return res.status(201).json({
-      data: user,
-      message: 'Successfully created a user',
+      data: response,
+      message: 'Successfully sign in',
       success: true,
       err: {}
     })
@@ -42,5 +42,5 @@ const getById = async (req,res)=>{
 }
 
 module.exports = {
-  create,getById
+  create,signIn
 }
