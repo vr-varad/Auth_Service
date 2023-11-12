@@ -41,7 +41,6 @@ module.exports = (sequelize, DataTypes) => {
         const hash = await bcrypt.hash(user.password, salt);
         user.password = hash;
     } catch (err) {
-        // Handle error
         console.error(err);
     }
   })
