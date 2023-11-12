@@ -3,7 +3,9 @@ const router = express.Router()
 
 const UserController = require('../../controllers/user-contorller')
 
-router.post('/signup',UserController.create)
-router.post('/signin',UserController.signIn)
+const {AuthValidators} = require('../../middleware/index')
+
+router.post('/signup',AuthValidators.validationAuth,UserController.create)
+router.post('/signin',AuthValidators.validationAuth,UserController.signIn)
 
 module.exports = router
