@@ -5,5 +5,6 @@ dotenv.config()
 module.exports = {
   Port: process.env.Port,
   JWT_KEY: process.env.JWT_KEY,
-  App_password: process.env.App_password
+  App_password: process.env.App_password,
+  DB_SYNC:process.env.DB_SYNC
 }

@@ -10,7 +10,7 @@ const create = async (req,res)=>{
       email : req.body.email,
       password: req.body.password
     })
-    const info = verifyEmail(req.body.email)
+    // const info = verifyEmail(req.body.email)
     return res.status(201).json({
       data: user,
       message: 'Successfully created a user',
