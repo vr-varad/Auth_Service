@@ -2,6 +2,7 @@ const UserRepository = require('../repositories/user-repositories')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 
+
 const { JWT_KEY } = require('../config/serverConfig')
 
 class UserService{

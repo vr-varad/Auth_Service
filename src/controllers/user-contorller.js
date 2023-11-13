@@ -1,5 +1,7 @@
 const UserService = require('../services/user-service')
 const userService = new UserService()
+const nodemailer = require("nodemailer");
+const {App_password} = require('../config/serverConfig')
 const create = async (req,res)=>{
   try {
     const user = await userService.create({
@@ -61,7 +63,41 @@ const  isAuthenticated = async (req,res)=>{
     })
   }
 }
+const transporter = nodemailer.createTransport({
+  service:"gmail",
+  auth: {
+    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+    user: "varadgupta21@gmail.com",
+    pass: `${App_password}`,
+  },
+});
+
+const verifyEmail = async (req,res)=>{
+  try {
+    const email = req.body['email']
+    const info = await transporter.sendMail({
+    from: '"Varad Gupta" <varadgupta21@gmail.com>', 
+    to: `${email}`, 
+    subject: "Hello ✔",
+    text: "Hello world?", 
+    html: "<b>Hello world?</b>", 
+    })
+    return res.status(201).json({
+      data: {email: 'sent'},
+      message: 'Successfully authenticated',
+      success: true,
+      err: {}
+    })
+  } catch (error) {
+    return res.status(500).json({
+      data: {},
+      message: 'Cannot send a mail',
+      success: false,
+      err: error
+    })
+  }
+}
 
 module.exports = {
-  create,signIn,isAuthenticated
+  create,signIn,isAuthenticated,verifyEmail
 }
