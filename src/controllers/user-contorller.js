@@ -41,6 +41,27 @@ const signIn = async (req,res)=>{
   }
 }
 
+const  isAuthenticated = async (req,res)=>{
+  try {
+    const token = req.rawHeaders[1]
+    const response = await userService.isAuthenticated(token)
+    console.log(response)
+    return res.status(201).json({
+      data: response,
+      message: 'Successfully authenticated',
+      success: true,
+      err: {}
+    })
+  } catch (error) {
+    return res.status(500).json({
+      data: {},
+      message: 'Cannot create a user',
+      success: false,
+      err: error
+    })
+  }
+}
+
 module.exports = {
-  create,signIn
+  create,signIn,isAuthenticated
 }

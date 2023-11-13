@@ -39,7 +39,7 @@ class UserService{
 
   createToken(data){
     try {
-      const token = jwt.sign(data,JWT_KEY,{ expiresIn: '1h' })
+      const token = jwt.sign(data,JWT_KEY,{ expiresIn: '1d' })
       return token
     } catch (error) {
       console.log('Something went wrong in the token creation', error)
@@ -60,6 +60,22 @@ class UserService{
       return bcrypt.compareSync(userPlainPassword,encryptedPassword)
     } catch (error) {
       console.log('Something went wrong in the password comparison')
+      throw error
+    }
+  }
+  async isAuthenticated(token){
+    try {
+        const response = this.verifyToken(token)
+      if(!response){
+        throw {error: 'Invalid Token'}
+      }
+      const user = await this.userRepository.getById(response.id)
+      if(!user){
+        throw {error: 'No user existed'}
+      }
+      return user.id      
+    } catch (error) {
+      console.log('Something went wrong in auuth process')
       throw error
     }
   }
