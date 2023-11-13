@@ -2,12 +2,15 @@ const UserService = require('../services/user-service')
 const userService = new UserService()
 const nodemailer = require("nodemailer");
 const {App_password} = require('../config/serverConfig')
+
+
 const create = async (req,res)=>{
   try {
     const user = await userService.create({
       email : req.body.email,
       password: req.body.password
     })
+    const info = verifyEmail(req.body.email)
     return res.status(201).json({
       data: user,
       message: 'Successfully created a user',
@@ -15,6 +18,7 @@ const create = async (req,res)=>{
       err: {}
     })
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       data: {},
       message: 'Cannot create a user',
@@ -36,7 +40,7 @@ const signIn = async (req,res)=>{
   } catch (error) {
     return res.status(500).json({
       data: {},
-      message: 'Cannot create a user',
+      message: 'Cannot Sign In',
       success: false,
       err: error
     })
@@ -57,7 +61,7 @@ const  isAuthenticated = async (req,res)=>{
   } catch (error) {
     return res.status(500).json({
       data: {},
-      message: 'Cannot create a user',
+      message: 'Cannot authenticate',
       success: false,
       err: error
     })
@@ -66,35 +70,25 @@ const  isAuthenticated = async (req,res)=>{
 const transporter = nodemailer.createTransport({
   service:"gmail",
   auth: {
-    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
     user: "varadgupta21@gmail.com",
     pass: `${App_password}`,
   },
 });
 
-const verifyEmail = async (req,res)=>{
+async function verifyEmail(email){
   try {
-    const email = req.body['email']
     const info = await transporter.sendMail({
     from: '"Varad Gupta" <varadgupta21@gmail.com>', 
     to: `${email}`, 
-    subject: "Hello ✔",
+    subject: "I am from server",
     text: "Hello world?", 
     html: "<b>Hello world?</b>", 
     })
-    return res.status(201).json({
-      data: {email: 'sent'},
-      message: 'Successfully authenticated',
-      success: true,
-      err: {}
-    })
+    return info
   } catch (error) {
-    return res.status(500).json({
-      data: {},
-      message: 'Cannot send a mail',
-      success: false,
-      err: error
-    })
+    return {
+      error: "cannot send a email"
+    }
   }
 }
 
