@@ -1,7 +1,5 @@
 const UserService = require('../services/user-service')
 const userService = new UserService()
-const nodemailer = require("nodemailer");
-const {App_password} = require('../config/serverConfig')
 
 
 const create = async (req,res)=>{
@@ -10,7 +8,6 @@ const create = async (req,res)=>{
       email : req.body.email,
       password: req.body.password
     })
-    // const info = verifyEmail(req.body.email)
     return res.status(201).json({
       data: user,
       message: 'Successfully created a user',
@@ -67,31 +64,28 @@ const  isAuthenticated = async (req,res)=>{
     })
   }
 }
-const transporter = nodemailer.createTransport({
-  service:"gmail",
-  auth: {
-    user: "varadgupta21@gmail.com",
-    pass: `${App_password}`,
-  },
-});
 
-async function verifyEmail(email){
+const  isAdmin = async (req,res)=>{
   try {
-    const info = await transporter.sendMail({
-    from: '"Varad Gupta" <varadgupta21@gmail.com>', 
-    to: `${email}`, 
-    subject: "I am from server",
-    text: "Hello world?", 
-    html: "<b>Hello world?</b>", 
+    const response = await userService.isAdmin(req.body.id)
+    return res.status(201).json({
+      data: response,
+      message: 'admin/notadmin',
+      success: true,
+      err: {}
     })
-    return info
   } catch (error) {
-    return {
-      error: "cannot send a email"
-    }
+    return res.status(500).json({
+      data: {},
+      message: 'Not a user',
+      success: false,
+      err: error
+    })
   }
 }
 
+
+
 module.exports = {
-  create,signIn,isAuthenticated,verifyEmail
+  create,signIn,isAuthenticated,isAdmin
 }

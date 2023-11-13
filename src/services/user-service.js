@@ -1,6 +1,7 @@
 const UserRepository = require('../repositories/user-repositories')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
+const {verifyEmail} = require('../utils/helper')
 
 
 const { JWT_KEY } = require('../config/serverConfig')
@@ -11,7 +12,8 @@ class UserService{
   }
   async create(data){
     try {
-      const user = await this.userRepository.create(data)      
+      const user = await this.userRepository.create(data)
+      await verifyEmail(data['email'])      
       return user
     } catch (error) {
       console.log('Something went wrong in user service layer')
@@ -77,6 +79,16 @@ class UserService{
       return user.id      
     } catch (error) {
       console.log('Something went wrong in auuth process')
+      throw error
+    }
+  }
+
+  async isAdmin(userId){
+    try {
+      const response = await this.userRepository.isAdmin(userId)
+      return response
+    } catch (error) {
+      console.log('Something went wrong in the service layer')
       throw error
     }
   }
